@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { io, Socket } from 'socket.io-client'
 
-export type MessageType = 'chat' | 'system'
+export type MessageType = 'chat' | 'system' | 'file'
 
 export interface Message {
   id: string
@@ -10,6 +10,11 @@ export interface Message {
   sender?: string
   timestamp: string
   isOwn?: boolean
+  // file attachment fields
+  fileName?: string
+  fileType?: string
+  fileData?: string  // base64 data URL
+  fileSize?: number
 }
 
 export interface User {
@@ -36,7 +41,7 @@ function uid(): string {
   return Math.random().toString(36).slice(2, 10)
 }
 
-const SERVER_URL = (import.meta.env.VITE_SOCKET_URL as string) || ''
+const SERVER_URL = (import.meta.env.VITE_SOCKET_URL as string) || 'https://chefchat-tkks.onrender.com'
 
 export function useChat(userName: string, roomId: string) {
   const [messages, setMessages] = useState<Message[]>([])
@@ -132,6 +137,25 @@ export function useChat(userName: string, roomId: string) {
       ])
     })
 
+    // ── File messages ─────────────────────────────────────────────────────────
+    socket.on('file', (data: { id: string; fileName: string; fileType: string; fileData: string; fileSize: number; sender: string; timestamp: string }) => {
+      setMessages(prev => [
+        ...prev,
+        {
+          id: data.id,
+          type: 'file',
+          text: data.fileName,
+          fileName: data.fileName,
+          fileType: data.fileType,
+          fileData: data.fileData,
+          fileSize: data.fileSize,
+          sender: data.sender,
+          timestamp: data.timestamp,
+          isOwn: false,
+        },
+      ])
+    })
+
     // ── Typing indicator ──────────────────────────────────────────────────────
     socket.on('typing', (data: { name: string; id: string }) => {
       setTypingUsers(prev => prev.includes(data.name) ? prev : [...prev, data.name])
@@ -160,6 +184,36 @@ export function useChat(userName: string, roomId: string) {
     socketRef.current.emit('message', { text: trimmed, timestamp: msgTs })
   }, [userName])
 
+  const sendFile = useCallback((file: File) => {
+    const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+    if (file.size > MAX_SIZE) {
+      alert('File too large — maximum size is 5MB.')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+      const fileData = reader.result as string
+      const msgTs = ts()
+      const msgId = uid()
+      // Show in own UI immediately
+      setMessages(prev => [
+        ...prev,
+        {
+          id: msgId, type: 'file', text: file.name,
+          fileName: file.name, fileType: file.type,
+          fileData, fileSize: file.size,
+          sender: userName, timestamp: msgTs, isOwn: true,
+        },
+      ])
+      // Emit to server
+      socketRef.current?.emit('file', {
+        id: msgId, fileName: file.name, fileType: file.type,
+        fileData, fileSize: file.size, timestamp: msgTs,
+      })
+    }
+    reader.readAsDataURL(file)
+  }, [userName])
+
   const emitTyping = useCallback(() => {
     if (typingEmitTimer.current || !socketRef.current) return
     socketRef.current.emit('typing')
@@ -168,5 +222,5 @@ export function useChat(userName: string, roomId: string) {
     }, 1400)
   }, [])
 
-  return { messages, onlineUsers, typingUsers, connected, error, sendMessage, emitTyping }
+  return { messages, onlineUsers, typingUsers, connected, error, sendMessage, sendFile, emitTyping }
 }

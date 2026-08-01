@@ -1,5 +1,23 @@
 import { useState, type FormEvent } from 'react'
 
+function copyText(text: string): Promise<void> {
+  if (navigator.clipboard?.writeText) {
+    return navigator.clipboard.writeText(text).catch(() => execCopy(text))
+  }
+  return execCopy(text)
+}
+
+function execCopy(text: string): Promise<void> {
+  const el = document.createElement('textarea')
+  el.value = text
+  el.style.cssText = 'position:fixed;opacity:0;pointer-events:none'
+  document.body.appendChild(el)
+  el.select()
+  document.execCommand('copy')
+  document.body.removeChild(el)
+  return Promise.resolve()
+}
+
 interface Props {
   onJoin: (name: string, roomId: string) => void
 }
@@ -85,7 +103,7 @@ function CreatePanel({ onJoin }: { onJoin: (name: string, roomId: string) => voi
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(roomId).then(() => {
+    copyText(roomId).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     })

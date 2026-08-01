@@ -68,6 +68,15 @@ io.on('connection', (socket) => {
     if (currentRoom) socket.to(currentRoom).emit('typing', { name: currentName, id: socket.id });
   });
 
+  socket.on('file', ({ id, fileName, fileType, fileData, fileSize, timestamp }) => {
+    if (!currentRoom) return;
+    socket.to(currentRoom).emit('file', {
+      id, fileName, fileType, fileData, fileSize,
+      sender: currentName, senderId: socket.id,
+      timestamp: timestamp ?? ts(),
+    });
+  });
+
   socket.on('disconnect', () => {
     if (!currentRoom) return;
     delete (rooms[currentRoom] ?? {})[socket.id];

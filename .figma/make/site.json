@@ -1,9 +1,7 @@
 {
   "title": "ChefChat",
   "description": "Streamline project management and collaboration for teams by providing tools for task tracking, file sharing, and real-time communication.",
-  "robots": {
-    "index": false
-  },
+  "language": "en",
   "icons": {
     "icon": "/.figma/make/favicon.png"
   },

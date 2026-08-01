@@ -72,6 +72,95 @@ export default function MessageList({ messages, typingUsers }: Props) {
       )}
 
       {messages.map(msg => {
+        // ── File bubble ────────────────────────────────────────────────────────
+        if (msg.type === 'file') {
+          const isImage = msg.fileType?.startsWith('image/')
+          const bubble = (
+            <div style={{
+              background: msg.isOwn ? 'var(--bubble-sent-bg)' : 'var(--bubble-received-bg)',
+              borderRadius: msg.isOwn ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+              overflow: 'hidden',
+              boxShadow: 'var(--shadow)',
+              maxWidth: '260px',
+            }}>
+              {isImage ? (
+                <a href={msg.fileData} download={msg.fileName} title="Click to download">
+                  <img
+                    src={msg.fileData}
+                    alt={msg.fileName}
+                    style={{ display: 'block', maxWidth: '100%', maxHeight: '200px', objectFit: 'cover' }}
+                  />
+                </a>
+              ) : (
+                <a
+                  href={msg.fileData}
+                  download={msg.fileName}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                    padding: '12px 14px', textDecoration: 'none',
+                  }}
+                >
+                  <div style={{
+                    width: '36px', height: '36px', borderRadius: '8px', flexShrink: 0,
+                    background: msg.isOwn ? 'rgba(255,255,255,0.25)' : 'var(--accent-soft)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                      stroke={msg.isOwn ? 'white' : 'var(--accent)'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{
+                      margin: 0, fontSize: '13px', fontWeight: 600,
+                      color: msg.isOwn ? 'var(--bubble-sent-text)' : 'var(--bubble-received-text)',
+                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    }}>{msg.fileName}</p>
+                    <p style={{ margin: 0, fontSize: '11px', color: msg.isOwn ? 'rgba(255,255,255,0.7)' : 'var(--text-secondary)' }}>
+                      {msg.fileSize ? (msg.fileSize > 1024 * 1024
+                        ? `${(msg.fileSize / 1024 / 1024).toFixed(1)} MB`
+                        : `${Math.round(msg.fileSize / 1024)} KB`) : ''} · tap to download
+                    </p>
+                  </div>
+                </a>
+              )}
+            </div>
+          )
+
+          return (
+            <div key={msg.id} className="message-enter" style={{
+              display: 'flex',
+              justifyContent: msg.isOwn ? 'flex-end' : 'flex-start',
+              alignItems: 'flex-end',
+              gap: '8px',
+              marginTop: '4px',
+            }}>
+              {!msg.isOwn && (
+                <div style={{
+                  width: '30px', height: '30px', borderRadius: '50%',
+                  background: avatarColor(msg.sender ?? ''),
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white', fontSize: '12px', fontWeight: 600, flexShrink: 0,
+                }}>
+                  {(msg.sender ?? '?').charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: msg.isOwn ? 'flex-end' : 'flex-start', gap: '3px' }}>
+                {!msg.isOwn && (
+                  <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)', paddingLeft: '4px' }}>
+                    {msg.sender}
+                  </span>
+                )}
+                {bubble}
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', paddingLeft: msg.isOwn ? 0 : '4px', paddingRight: msg.isOwn ? '4px' : 0 }}>
+                  {msg.timestamp}
+                </span>
+              </div>
+            </div>
+          )
+        }
+
         if (msg.type === 'system') {
           return (
             <div
