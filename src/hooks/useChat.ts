@@ -185,33 +185,62 @@ export function useChat(userName: string, roomId: string) {
   }, [userName])
 
   const sendFile = useCallback((file: File) => {
-    const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+    const MAX_SIZE = 5 * 1024 * 1024 // 5MB hard limit
     if (file.size > MAX_SIZE) {
-      alert('File too large — maximum size is 5MB.')
+      alert('File too large — maximum size is 5MB. For images, try compressing first.')
       return
     }
-    const reader = new FileReader()
-    reader.onload = () => {
-      const fileData = reader.result as string
+
+    const doSend = (fileData: string, fileType: string, fileSize: number) => {
       const msgTs = ts()
       const msgId = uid()
-      // Show in own UI immediately
       setMessages(prev => [
         ...prev,
         {
           id: msgId, type: 'file', text: file.name,
-          fileName: file.name, fileType: file.type,
-          fileData, fileSize: file.size,
+          fileName: file.name, fileType,
+          fileData, fileSize,
           sender: userName, timestamp: msgTs, isOwn: true,
         },
       ])
-      // Emit to server
       socketRef.current?.emit('file', {
-        id: msgId, fileName: file.name, fileType: file.type,
-        fileData, fileSize: file.size, timestamp: msgTs,
+        id: msgId, fileName: file.name, fileType,
+        fileData, fileSize, timestamp: msgTs,
       })
     }
-    reader.readAsDataURL(file)
+
+    // Compress images before sending to keep payload small
+    if (file.type.startsWith('image/')) {
+      const img = new Image()
+      const objectUrl = URL.createObjectURL(file)
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl)
+        const canvas = document.createElement('canvas')
+        const MAX_DIM = 1200
+        let { width, height } = img
+        if (width > MAX_DIM || height > MAX_DIM) {
+          if (width > height) { height = Math.round(height * MAX_DIM / width); width = MAX_DIM }
+          else { width = Math.round(width * MAX_DIM / height); height = MAX_DIM }
+        }
+        canvas.width = width
+        canvas.height = height
+        canvas.getContext('2d')!.drawImage(img, 0, 0, width, height)
+        const compressed = canvas.toDataURL('image/jpeg', 0.75)
+        const approxSize = Math.round(compressed.length * 0.75)
+        doSend(compressed, 'image/jpeg', approxSize)
+      }
+      img.onerror = () => {
+        // Fall back to raw read if image decode fails
+        const reader = new FileReader()
+        reader.onload = () => doSend(reader.result as string, file.type, file.size)
+        reader.readAsDataURL(file)
+      }
+      img.src = objectUrl
+    } else {
+      const reader = new FileReader()
+      reader.onload = () => doSend(reader.result as string, file.type, file.size)
+      reader.readAsDataURL(file)
+    }
   }, [userName])
 
   const emitTyping = useCallback(() => {
