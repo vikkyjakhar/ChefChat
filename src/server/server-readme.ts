@@ -27,7 +27,6 @@ const io = new Server(httpServer, {
   cors: { origin: '*', methods: ['GET', 'POST'] },
 });
 
-// In-memory: { [roomId]: { [socketId]: { id, name } } }
 const rooms = {};
 const getUsers = (roomId) => Object.values(rooms[roomId] ?? {});
 const ts = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -41,13 +40,11 @@ io.on('connection', (socket) => {
     const name = String(userName ?? '').trim().slice(0, 20);
     const room = String(roomId ?? '').trim().slice(0, 32);
     if (!name || !room) return;
-
     currentRoom = room;
     currentName = name;
     socket.join(room);
     if (!rooms[room]) rooms[room] = {};
     rooms[room][socket.id] = { id: socket.id, name };
-
     socket.emit('users', getUsers(room));
     socket.to(room).emit('user:joined', { id: socket.id, name });
     socket.to(room).emit('users', getUsers(room));
@@ -87,5 +84,4 @@ io.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(PORT, () => console.log('ChefChat server on http://localhost:' + PORT));
-`;
+httpServer.listen(PORT, () => console.log('ChefChat server on port ' + PORT));
