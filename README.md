@@ -1,13 +1,7 @@
-ChefChat is anonymous text chat for cooks. No sign-up, no profile a unique key unlocks a private room. Talk shop, ask questions, vent freely.
+No names. No accounts. Just a key.
 
-
-ChefChat is where cooks talk shop without a profile, a photo, or a permanent record attached to their name. 
-Every conversation happens inside a room. Every room opens with one thing a unique key. 
-Get the key, drop into the room, type. No account, no camera, no trace.
+ChefChat is anonymous chat, stripped down to what matters: a room and a key. No sign-up, no profile, no history tied to your name. Create a room, get a unique key, share it with whoever should have it. Anyone with the key is in instantly, anonymously.
 
 About Section
 
-Kitchens run on honesty the recipe that flopped, the technique nobody explains right, the venting after a brutal service. 
-ChefChat strips chat down to just that: text, and nothing else. No profile pictures, no video calls, no images to screenshot and pass around. 
-A host creates a room and gets a unique key in return. Share it with a supper club, a line crew, or strangers troubleshooting the same failed soufflé. 
-Anyone with the key is in instantly, anonymously. When the conversation's done, the room and the key can both disappear.
+Most chat apps want your email, your photo, your real name before you've said a word. ChefChat skips all of that. You create a room and get back a unique key that's the only credential that exists. Share it with a friend, a group, a team, a community anyone who has the key gets in immediately, with a temporary identity that vanishes when they leave. No account to manage, no profile to maintain, no permanent log tying the conversation back to you.
