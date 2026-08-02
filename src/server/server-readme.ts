@@ -30,6 +30,9 @@ const io = new Server(httpServer, {
 
 // In-memory: { [roomId]: { [socketId]: { id, name } } }
 const rooms = {};
+// Stores the password for each room (set by the creator, empty string = no password)
+const roomPasswords = {};
+
 const getUsers = (roomId) => Object.values(rooms[roomId] ?? {});
 const ts = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 const uid = () => Math.random().toString(36).slice(2, 10);
@@ -38,10 +41,25 @@ io.on('connection', (socket) => {
   let currentRoom = null;
   let currentName = null;
 
-  socket.on('join', ({ roomId, userName }) => {
+  socket.on('join', ({ roomId, userName, password }) => {
     const name = String(userName ?? '').trim().slice(0, 20);
     const room = String(roomId ?? '').trim().slice(0, 32);
+    const pass = String(password ?? '').trim();
     if (!name || !room) return;
+
+    const roomExists = !!rooms[room];
+
+    if (roomExists) {
+      // Room has a password set — validate it
+      const expected = roomPasswords[room] ?? '';
+      if (expected && pass !== expected) {
+        socket.emit('join:error', { message: 'Incorrect room password.' });
+        return;
+      }
+    } else {
+      // First person to join creates the room — store their password (may be empty)
+      roomPasswords[room] = pass;
+    }
 
     currentRoom = room;
     currentName = name;
@@ -84,7 +102,10 @@ io.on('connection', (socket) => {
     io.to(currentRoom).emit('user:left', { id: socket.id, name: currentName });
     io.to(currentRoom).emit('users', getUsers(currentRoom));
     io.to(currentRoom).emit('system', { text: currentName + ' left the chat', timestamp: ts() });
-    if (!Object.keys(rooms[currentRoom] ?? {}).length) delete rooms[currentRoom];
+    if (!Object.keys(rooms[currentRoom] ?? {}).length) {
+      delete rooms[currentRoom];
+      delete roomPasswords[currentRoom];
+    }
   });
 });
 

@@ -19,146 +19,170 @@ function execCopy(text: string): Promise<void> {
 }
 
 interface Props {
-  onJoin: (name: string, roomId: string) => void
+  onJoin: (name: string, roomId: string, password: string) => void
+  joinError?: string | null
 }
 
 function generateRoomId(): string {
-  // 8 uppercase alphanumeric chars, easy to read and share
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
   return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
 }
 
 function Logo() {
   return (
-    <div
-      style={{
-        width: '64px',
-        height: '64px',
-        borderRadius: '18px',
-        background: 'var(--accent)',
-        margin: '0 auto 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div style={{
+      width: '64px', height: '64px', borderRadius: '18px',
+      background: 'var(--accent)', margin: '0 auto 24px',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <path
-          d="M4 8C4 6.343 5.343 5 7 5h18c1.657 0 3 1.343 3 3v12c0 1.657-1.343 3-3 3H18l-4 4-2-4H7c-1.657 0-3-1.343-3-3V8z"
-          fill="white"
-          fillOpacity="0.95"
-        />
+        <path d="M4 8C4 6.343 5.343 5 7 5h18c1.657 0 3 1.343 3 3v12c0 1.657-1.343 3-3 3H18l-4 4-2-4H7c-1.657 0-3-1.343-3-3V8z" fill="white" fillOpacity="0.95" />
       </svg>
     </div>
   )
 }
 
-function NameInput({
-  value,
-  onChange,
-  error,
-}: {
-  value: string
-  onChange: (v: string) => void
-  error: string
-}) {
+function NameInput({ value, onChange, error }: { value: string; onChange: (v: string) => void; error: string }) {
   return (
-    <div style={{ marginBottom: error ? '8px' : '20px' }}>
+    <div style={{ marginBottom: error ? '8px' : '16px' }}>
       <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', textAlign: 'left', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
         Display Name
       </label>
       <input
-        type="text"
-        placeholder="e.g. Alex"
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        maxLength={20}
-        autoFocus
+        type="text" placeholder="e.g. Alex" value={value}
+        onChange={e => onChange(e.target.value)} maxLength={20} autoFocus
         style={{
-          width: '100%',
-          padding: '11px 14px',
-          fontSize: '15px',
+          width: '100%', padding: '11px 14px', fontSize: '15px',
           border: `1.5px solid ${error ? '#ef4444' : 'var(--border)'}`,
-          borderRadius: '11px',
-          background: 'var(--bg-primary)',
-          color: 'var(--text-primary)',
-          outline: 'none',
-          fontFamily: 'inherit',
+          borderRadius: '11px', background: 'var(--bg-primary)',
+          color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit',
         }}
       />
-      {error && (
-        <p style={{ color: '#ef4444', fontSize: '12px', margin: '5px 0 0', textAlign: 'left' }}>
-          {error}
-        </p>
-      )}
+      {error && <p style={{ color: '#ef4444', fontSize: '12px', margin: '5px 0 0', textAlign: 'left' }}>{error}</p>}
     </div>
   )
 }
 
-// ── Create Room panel ──────────────────────────────────────────────────────────
-function CreatePanel({ onJoin }: { onJoin: (name: string, roomId: string) => void }) {
+function PasswordInput({ value, onChange, label, placeholder, optional }: {
+  value: string; onChange: (v: string) => void
+  label: string; placeholder: string; optional?: boolean
+}) {
+  const [show, setShow] = useState(false)
+  return (
+    <div style={{ marginBottom: '16px' }}>
+      <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+        {label}
+        {optional && <span style={{ fontSize: '10px', fontWeight: 400, color: 'var(--text-secondary)', textTransform: 'none', letterSpacing: 0 }}>optional</span>}
+      </label>
+      <div style={{ position: 'relative' }}>
+        <input
+          type={show ? 'text' : 'password'}
+          placeholder={placeholder}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          maxLength={50}
+          style={{
+            width: '100%', padding: '11px 44px 11px 14px', fontSize: '15px',
+            border: '1.5px solid var(--border)', borderRadius: '11px',
+            background: 'var(--bg-primary)', color: 'var(--text-primary)',
+            outline: 'none', fontFamily: 'inherit',
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => setShow(s => !s)}
+          style={{
+            position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
+            background: 'none', border: 'none', cursor: 'pointer',
+            color: 'var(--text-secondary)', padding: '2px',
+          }}
+        >
+          {show ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+              <line x1="1" y1="1" x2="23" y2="23" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          )}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function btnStyle(active: boolean) {
+  return ({
+    flex: 1, padding: '9px', fontSize: '14px', fontWeight: 600,
+    border: 'none', borderRadius: '9px', cursor: 'pointer', fontFamily: 'inherit',
+    background: active ? 'var(--accent)' : 'transparent',
+    color: active ? 'var(--text-on-accent)' : 'var(--text-secondary)',
+    transition: 'background 0.15s, color 0.15s',
+  })
+}
+
+function submitBtn(label: string) {
+  return (
+    <button
+      type="submit"
+      style={{
+        width: '100%', padding: '13px', fontSize: '15px', fontWeight: 600,
+        color: 'var(--text-on-accent)', background: 'var(--accent)',
+        border: 'none', borderRadius: '12px', cursor: 'pointer', fontFamily: 'inherit',
+      }}
+      onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-hover)')}
+      onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent)')}
+    >
+      {label}
+    </button>
+  )
+}
+
+// ── Create Room ────────────────────────────────────────────────────────────────
+function CreatePanel({ onJoin }: { onJoin: (name: string, roomId: string, password: string) => void }) {
   const [name, setName] = useState('')
   const [nameError, setNameError] = useState('')
   const [roomId] = useState(generateRoomId)
+  const [password, setPassword] = useState('')
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    copyText(roomId).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
+    copyText(roomId).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) })
   }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     const trimmed = name.trim().slice(0, 20)
     if (!trimmed) { setNameError('Please enter a display name.'); return }
-    onJoin(trimmed, roomId)
+    onJoin(trimmed, roomId, password.trim())
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <NameInput value={name} onChange={v => { setName(v); setNameError('') }} error={nameError} />
 
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: '16px' }}>
         <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', textAlign: 'left', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
           Your Room ID
         </label>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <div
-            style={{
-              flex: 1,
-              padding: '11px 14px',
-              background: 'var(--bg-tertiary)',
-              border: '1.5px solid var(--border)',
-              borderRadius: '11px',
-              fontSize: '17px',
-              fontWeight: 700,
-              letterSpacing: '0.18em',
-              color: 'var(--accent)',
-              fontFamily: 'monospace',
-            }}
-          >
+          <div style={{
+            flex: 1, padding: '11px 14px', background: 'var(--bg-tertiary)',
+            border: '1.5px solid var(--border)', borderRadius: '11px',
+            fontSize: '17px', fontWeight: 700, letterSpacing: '0.18em',
+            color: 'var(--accent)', fontFamily: 'monospace',
+          }}>
             {roomId}
           </div>
-          <button
-            type="button"
-            onClick={handleCopy}
-            title="Copy room ID"
-            style={{
-              padding: '11px 14px',
-              background: copied ? 'var(--accent-soft)' : 'var(--bg-secondary)',
-              border: '1.5px solid var(--border)',
-              borderRadius: '11px',
-              cursor: 'pointer',
-              color: copied ? 'var(--accent)' : 'var(--text-secondary)',
-              fontSize: '13px',
-              fontWeight: 600,
-              fontFamily: 'inherit',
-              whiteSpace: 'nowrap',
-              transition: 'background 0.15s, color 0.15s',
-            }}
-          >
+          <button type="button" onClick={handleCopy} style={{
+            padding: '11px 14px', background: copied ? 'var(--accent-soft)' : 'var(--bg-secondary)',
+            border: '1.5px solid var(--border)', borderRadius: '11px', cursor: 'pointer',
+            color: copied ? 'var(--accent)' : 'var(--text-secondary)', fontSize: '13px',
+            fontWeight: 600, fontFamily: 'inherit', whiteSpace: 'nowrap',
+          }}>
             {copied ? '✓ Copied' : 'Copy'}
           </button>
         </div>
@@ -167,33 +191,38 @@ function CreatePanel({ onJoin }: { onJoin: (name: string, roomId: string) => voi
         </p>
       </div>
 
-      <button
-        type="submit"
-        style={{
-          width: '100%',
-          padding: '13px',
-          fontSize: '15px',
-          fontWeight: 600,
-          color: 'var(--text-on-accent)',
-          background: 'var(--accent)',
-          border: 'none',
-          borderRadius: '12px',
-          cursor: 'pointer',
-          fontFamily: 'inherit',
-        }}
-        onMouseEnter={e => ((e.currentTarget.style.background = 'var(--accent-hover)'))}
-        onMouseLeave={e => ((e.currentTarget.style.background = 'var(--accent)'))}
-      >
-        Create &amp; Enter Room
-      </button>
+      <PasswordInput
+        value={password} onChange={setPassword}
+        label="Room Password" placeholder="Set a password (optional)"
+        optional
+      />
+
+      {password && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px',
+          background: 'var(--accent-soft)', borderRadius: '10px', marginBottom: '16px',
+          border: '1px solid var(--border)',
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          <span style={{ fontSize: '12px', color: 'var(--accent)', fontWeight: 500 }}>
+            Room is password protected — share the password with your guests
+          </span>
+        </div>
+      )}
+
+      {submitBtn('Create & Enter Room')}
     </form>
   )
 }
 
-// ── Join Room panel ────────────────────────────────────────────────────────────
-function JoinPanel({ onJoin }: { onJoin: (name: string, roomId: string) => void }) {
+// ── Join Room ──────────────────────────────────────────────────────────────────
+function JoinPanel({ onJoin, joinError }: { onJoin: (name: string, roomId: string, password: string) => void; joinError?: string | null }) {
   const [name, setName] = useState('')
   const [roomId, setRoomId] = useState('')
+  const [password, setPassword] = useState('')
   const [nameError, setNameError] = useState('')
   const [roomError, setRoomError] = useState('')
 
@@ -205,142 +234,91 @@ function JoinPanel({ onJoin }: { onJoin: (name: string, roomId: string) => void 
     if (!trimmedName) { setNameError('Please enter a display name.'); ok = false }
     if (trimmedRoom.length < 4) { setRoomError('Please enter a valid Room ID.'); ok = false }
     if (!ok) return
-    onJoin(trimmedName, trimmedRoom)
+    onJoin(trimmedName, trimmedRoom, password.trim())
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <NameInput value={name} onChange={v => { setName(v); setNameError('') }} error={nameError} />
 
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: '16px' }}>
         <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', textAlign: 'left', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
           Room ID
         </label>
         <input
-          type="text"
-          placeholder="e.g. ABCD1234"
+          type="text" placeholder="e.g. ABCD1234"
           value={roomId}
           onChange={e => { setRoomId(e.target.value.toUpperCase()); setRoomError('') }}
           maxLength={20}
           style={{
-            width: '100%',
-            padding: '11px 14px',
-            fontSize: '17px',
-            fontWeight: 700,
-            letterSpacing: '0.18em',
-            border: `1.5px solid ${roomError ? '#ef4444' : 'var(--border)'}`,
-            borderRadius: '11px',
-            background: 'var(--bg-primary)',
-            color: 'var(--accent)',
-            outline: 'none',
-            fontFamily: 'monospace',
+            width: '100%', padding: '11px 14px', fontSize: '17px', fontWeight: 700,
+            letterSpacing: '0.18em', border: `1.5px solid ${roomError ? '#ef4444' : 'var(--border)'}`,
+            borderRadius: '11px', background: 'var(--bg-primary)', color: 'var(--accent)',
+            outline: 'none', fontFamily: 'monospace',
           }}
         />
-        {roomError && (
-          <p style={{ color: '#ef4444', fontSize: '12px', margin: '5px 0 0', textAlign: 'left' }}>
-            {roomError}
-          </p>
-        )}
+        {roomError && <p style={{ color: '#ef4444', fontSize: '12px', margin: '5px 0 0', textAlign: 'left' }}>{roomError}</p>}
       </div>
 
-      <button
-        type="submit"
-        style={{
-          width: '100%',
-          padding: '13px',
-          fontSize: '15px',
-          fontWeight: 600,
-          color: 'var(--text-on-accent)',
-          background: 'var(--accent)',
-          border: 'none',
-          borderRadius: '12px',
-          cursor: 'pointer',
-          fontFamily: 'inherit',
-        }}
-        onMouseEnter={e => ((e.currentTarget.style.background = 'var(--accent-hover)'))}
-        onMouseLeave={e => ((e.currentTarget.style.background = 'var(--accent)'))}
-      >
-        Join Room
-      </button>
+      <PasswordInput
+        value={password} onChange={setPassword}
+        label="Room Password" placeholder="Enter password if required"
+        optional
+      />
+
+      {/* Server-side join error (wrong password etc.) */}
+      {joinError && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px',
+          background: '#fef2f2', borderRadius: '10px', marginBottom: '16px',
+          border: '1px solid #fecaca',
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span style={{ fontSize: '12px', color: '#ef4444', fontWeight: 500 }}>{joinError}</span>
+        </div>
+      )}
+
+      {submitBtn('Join Room')}
     </form>
   )
 }
 
-// ── Main join screen ───────────────────────────────────────────────────────────
-export default function JoinScreen({ onJoin }: Props) {
+// ── Main ───────────────────────────────────────────────────────────────────────
+export default function JoinScreen({ onJoin, joinError }: Props) {
   const [tab, setTab] = useState<'create' | 'join'>('create')
 
-  const tabStyle = (active: boolean) => ({
-    flex: 1,
-    padding: '9px',
-    fontSize: '14px',
-    fontWeight: 600,
-    border: 'none',
-    borderRadius: '9px',
-    cursor: 'pointer',
-    fontFamily: 'inherit',
-    background: active ? 'var(--accent)' : 'transparent',
-    color: active ? 'var(--text-on-accent)' : 'var(--text-secondary)',
-    transition: 'background 0.15s, color 0.15s',
-  })
-
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'var(--bg-primary)',
-        padding: '24px',
-      }}
-    >
-      <div
-        style={{
-          background: 'var(--bg-secondary)',
-          border: '1px solid var(--border)',
-          borderRadius: '20px',
-          padding: '40px',
-          width: '100%',
-          maxWidth: '420px',
-          boxShadow: 'var(--shadow-md)',
-          textAlign: 'center',
-        }}
-      >
+    <div style={{
+      minHeight: '100vh', display: 'flex', alignItems: 'center',
+      justifyContent: 'center', background: 'var(--bg-primary)', padding: '24px',
+    }}>
+      <div style={{
+        background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+        borderRadius: '20px', padding: '40px', width: '100%', maxWidth: '420px',
+        boxShadow: 'var(--shadow-md)', textAlign: 'center',
+      }}>
         <Logo />
-
-        <h1 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 4px' }}>
-          ChefChat
-        </h1>
+        <h1 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 4px' }}>ChefChat</h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: '0 0 28px' }}>
           Private rooms — no two rooms share the same ID
         </p>
 
         {/* Tab switcher */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '4px',
-            background: 'var(--bg-tertiary)',
-            border: '1px solid var(--border)',
-            borderRadius: '12px',
-            padding: '4px',
-            marginBottom: '28px',
-          }}
-        >
-          <button style={tabStyle(tab === 'create')} onClick={() => setTab('create')}>
-            Create Room
-          </button>
-          <button style={tabStyle(tab === 'join')} onClick={() => setTab('join')}>
-            Join Room
-          </button>
+        <div style={{
+          display: 'flex', gap: '4px', background: 'var(--bg-tertiary)',
+          border: '1px solid var(--border)', borderRadius: '12px',
+          padding: '4px', marginBottom: '28px',
+        }}>
+          <button style={btnStyle(tab === 'create')} onClick={() => setTab('create')}>Create Room</button>
+          <button style={btnStyle(tab === 'join')} onClick={() => setTab('join')}>Join Room</button>
         </div>
 
-        {tab === 'create' ? (
-          <CreatePanel onJoin={onJoin} />
-        ) : (
-          <JoinPanel onJoin={onJoin} />
-        )}
+        {tab === 'create'
+          ? <CreatePanel onJoin={onJoin} />
+          : <JoinPanel onJoin={onJoin} joinError={joinError} />
+        }
       </div>
     </div>
   )

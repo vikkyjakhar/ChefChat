@@ -43,7 +43,7 @@ function uid(): string {
 
 const SERVER_URL = (import.meta.env.VITE_SOCKET_URL as string) || 'https://chefchat-tkks.onrender.com'
 
-export function useChat(userName: string, roomId: string) {
+export function useChat(userName: string, roomId: string, password = '') {
   const [messages, setMessages] = useState<Message[]>([])
   const [onlineUsers, setOnlineUsers] = useState<User[]>([])
   const [typingUsers, setTypingUsers] = useState<string[]>([])
@@ -77,8 +77,8 @@ export function useChat(userName: string, roomId: string) {
     socket.on('connect', () => {
       setConnected(true)
       setError(null)
-      // Join the room with our display name
-      socket.emit('join', { roomId, userName })
+      // Join the room with our display name and optional password
+      socket.emit('join', { roomId, userName, password })
       addMsg({ id: uid(), type: 'system', text: 'You joined the chat', timestamp: ts() })
     })
 
@@ -92,6 +92,10 @@ export function useChat(userName: string, roomId: string) {
     socket.on('connect_error', () => {
       setConnected(false)
       setError(`Cannot reach server at ${SERVER_URL}`)
+    })
+
+    socket.on('join:error', (data: { message: string }) => {
+      setError(data.message)
     })
 
     socket.on('reconnect', () => {
@@ -168,7 +172,7 @@ export function useChat(userName: string, roomId: string) {
     return () => {
       socket.disconnect()
     }
-  }, [userName, roomId])
+  }, [userName, roomId, password])
 
   const sendMessage = useCallback((text: string) => {
     const trimmed = text.trim().slice(0, MAX_LEN)

@@ -92,8 +92,15 @@ function RoomBadge({ roomId }: { roomId: string }) {
   )
 }
 
-function ChatApp({ userName, roomId }: { userName: string; roomId: string }) {
-  const { messages, onlineUsers, typingUsers, connected, error, sendMessage, sendFile, emitTyping } = useChat(userName, roomId)
+function ChatApp({ userName, roomId, password, onJoinError }: { userName: string; roomId: string; password: string; onJoinError: (err: string) => void }) {
+  const { messages, onlineUsers, typingUsers, connected, error, sendMessage, sendFile, emitTyping } = useChat(userName, roomId, password)
+
+  // Kick back to join screen if server rejects the password
+  useEffect(() => {
+    if (error && error.toLowerCase().includes('password')) {
+      onJoinError(error)
+    }
+  }, [error])
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('chat-theme')
@@ -216,7 +223,8 @@ function ChatApp({ userName, roomId }: { userName: string; roomId: string }) {
 }
 
 export default function App() {
-  const [session, setSession] = useState<{ userName: string; roomId: string } | null>(null)
+  const [session, setSession] = useState<{ userName: string; roomId: string; password: string } | null>(null)
+  const [joinError, setJoinError] = useState<string | null>(null)
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('chat-theme')
     if (saved) return saved === 'dark'
@@ -231,14 +239,26 @@ export default function App() {
   if (!session) {
     return (
       <div style={{ position: 'relative', minHeight: '100vh' }}>
-        {/* Toggle sits top-right on the join screen */}
         <div style={{ position: 'absolute', top: '20px', right: '24px', zIndex: 10 }}>
           <ThemeToggle isDark={isDark} onToggle={() => setIsDark(d => !d)} />
         </div>
-        <JoinScreen onJoin={(userName, roomId) => setSession({ userName, roomId })} />
+        <JoinScreen
+          onJoin={(userName, roomId, password) => {
+            setJoinError(null)
+            setSession({ userName, roomId, password })
+          }}
+          joinError={joinError}
+        />
       </div>
     )
   }
 
-  return <ChatApp userName={session.userName} roomId={session.roomId} />
+  return (
+    <ChatApp
+      userName={session.userName}
+      roomId={session.roomId}
+      password={session.password}
+      onJoinError={err => { setSession(null); setJoinError(err) }}
+    />
+  )
 }
