@@ -92,7 +92,7 @@ export default function Sidebar({ users, open, onClose }: Props) {
               >
                 {user.name.charAt(0).toUpperCase()}
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <p
                   style={{
                     margin: 0,
@@ -106,6 +106,9 @@ export default function Sidebar({ users, open, onClose }: Props) {
                 >
                   {user.name}
                 </p>
+                {user.isCreator && (
+                  <span title="Room creator" style={{ fontSize: '12px', lineHeight: 1, flexShrink: 0 }}>👑</span>
+                )}
               </div>
               {/* Online dot */}
               <div

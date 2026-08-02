@@ -166,7 +166,7 @@ function CreatePanel({ onJoin }: { onJoin: (name: string, roomId: string, passwo
 
       <div style={{ marginBottom: '16px' }}>
         <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', textAlign: 'left', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-          Your Room ID
+          Room Code
         </label>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <div style={{
@@ -189,6 +189,21 @@ function CreatePanel({ onJoin }: { onJoin: (name: string, roomId: string, passwo
         <p style={{ margin: '6px 0 0', fontSize: '12px', color: 'var(--text-secondary)', textAlign: 'left' }}>
           Share this ID with someone so they can join your room.
         </p>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '6px', marginTop: '8px',
+          padding: '7px 10px', background: 'var(--bg-tertiary)',
+          border: '1px solid var(--border)', borderRadius: '8px',
+        }}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Up to <strong style={{ color: 'var(--accent)' }}>100 participants</strong>
+          </span>
+        </div>
       </div>
 
       <PasswordInput
@@ -219,9 +234,9 @@ function CreatePanel({ onJoin }: { onJoin: (name: string, roomId: string, passwo
 }
 
 // ── Join Room ──────────────────────────────────────────────────────────────────
-function JoinPanel({ onJoin, joinError }: { onJoin: (name: string, roomId: string, password: string) => void; joinError?: string | null }) {
+function JoinPanel({ onJoin, joinError, prefillRoomId = '' }: { onJoin: (name: string, roomId: string, password: string) => void; joinError?: string | null; prefillRoomId?: string }) {
   const [name, setName] = useState('')
-  const [roomId, setRoomId] = useState('')
+  const [roomId, setRoomId] = useState(prefillRoomId.toUpperCase())
   const [password, setPassword] = useState('')
   const [nameError, setNameError] = useState('')
   const [roomError, setRoomError] = useState('')
@@ -287,7 +302,8 @@ function JoinPanel({ onJoin, joinError }: { onJoin: (name: string, roomId: strin
 
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function JoinScreen({ onJoin, joinError }: Props) {
-  const [tab, setTab] = useState<'create' | 'join'>('create')
+  const prefillId = new URLSearchParams(window.location.search).get('join') ?? ''
+  const [tab, setTab] = useState<'create' | 'join'>(prefillId ? 'join' : 'create')
 
   return (
     <div style={{
@@ -317,7 +333,7 @@ export default function JoinScreen({ onJoin, joinError }: Props) {
 
         {tab === 'create'
           ? <CreatePanel onJoin={onJoin} />
-          : <JoinPanel onJoin={onJoin} joinError={joinError} />
+          : <JoinPanel onJoin={onJoin} joinError={joinError} prefillRoomId={prefillId} />
         }
       </div>
     </div>

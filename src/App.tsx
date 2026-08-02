@@ -92,8 +92,50 @@ function RoomBadge({ roomId }: { roomId: string }) {
   )
 }
 
+type ExpiryOption = 'none' | '1h' | '1d'
+const EXPIRY_LABELS: Record<ExpiryOption, string> = { none: 'Until room closes', '1h': 'Last 1 hour', '1d': 'Last 24 hours' }
+const EXPIRY_MS: Record<ExpiryOption, number> = { none: Infinity, '1h': 3_600_000, '1d': 86_400_000 }
+
+function InviteButton({ roomId }: { roomId: string }) {
+  const [state, setState] = useState<'idle' | 'copied'>('idle')
+  const copy = () => {
+    const url = `${window.location.origin}${window.location.pathname}?join=${roomId}`
+    copyText(url).then(() => { setState('copied'); setTimeout(() => setState('idle'), 2000) })
+  }
+  return (
+    <button
+      onClick={copy}
+      title="Copy invite link"
+      style={{
+        display: 'flex', alignItems: 'center', gap: '5px',
+        padding: '5px 10px', border: '1.5px solid var(--border)',
+        borderRadius: '8px', background: state === 'copied' ? 'var(--accent-soft)' : 'var(--bg-tertiary)',
+        color: state === 'copied' ? 'var(--accent)' : 'var(--text-secondary)',
+        cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: 'inherit',
+        transition: 'background 0.15s, color 0.15s', whiteSpace: 'nowrap', flexShrink: 0,
+      }}
+    >
+      {state === 'copied' ? (
+        <>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+          Copied!
+        </>
+      ) : (
+        <>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          </svg>
+          Invite
+        </>
+      )}
+    </button>
+  )
+}
+
 function ChatApp({ userName, roomId, password, onJoinError }: { userName: string; roomId: string; password: string; onJoinError: (err: string) => void }) {
-  const { messages, onlineUsers, typingUsers, connected, error, sendMessage, sendFile, emitTyping } = useChat(userName, roomId, password)
+  const { messages, onlineUsers, typingUsers, connected, error, isCreator, e2eeReady, sendMessage, sendFile, emitTyping } = useChat(userName, roomId, password)
+  const isLocked = password.trim().length > 0
 
   // Kick back to join screen if server rejects the password
   useEffect(() => {
@@ -102,6 +144,7 @@ function ChatApp({ userName, roomId, password, onJoinError }: { userName: string
     }
   }, [error])
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [expiry, setExpiry] = useState<ExpiryOption>('none')
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('chat-theme')
     if (saved) return saved === 'dark'
@@ -112,6 +155,9 @@ function ChatApp({ userName, roomId, password, onJoinError }: { userName: string
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
     localStorage.setItem('chat-theme', isDark ? 'dark' : 'light')
   }, [isDark])
+
+  const cutoff = Date.now() - EXPIRY_MS[expiry]
+  const visibleMessages = expiry === 'none' ? messages : messages.filter(m => m.createdAt >= cutoff)
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
@@ -187,16 +233,70 @@ function ChatApp({ userName, roomId, password, onJoinError }: { userName: string
           </svg>
         </div>
 
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)' }}>
-            ChefChat
-          </h1>
-          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
-            {onlineUsers.length} online
-          </p>
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <h1 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                ChefChat
+              </h1>
+              {isCreator && (
+                <span title="You created this room" style={{ fontSize: '14px', lineHeight: 1 }}>👑</span>
+              )}
+              {isLocked && (
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" title="Password protected">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              )}
+              {/* E2EE badge */}
+              <span
+                title={e2eeReady ? 'End-to-End Encrypted — the server cannot read your messages' : 'Deriving encryption key…'}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '3px',
+                  padding: '2px 6px', borderRadius: '6px', fontSize: '10px', fontWeight: 700,
+                  letterSpacing: '0.04em', lineHeight: 1.4,
+                  background: e2eeReady ? 'var(--accent-soft)' : 'var(--bg-tertiary)',
+                  color: e2eeReady ? 'var(--accent)' : 'var(--text-secondary)',
+                  border: '1px solid var(--border)',
+                  transition: 'background 0.3s, color 0.3s',
+                  userSelect: 'none',
+                }}
+              >
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                E2EE
+              </span>
+            </div>
+            {/* Live participant count */}
+            <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', display: 'inline-block', flexShrink: 0 }} />
+              {onlineUsers.length}/100 participants
+            </p>
+          </div>
         </div>
 
-        {/* Room ID badge — click to copy */}
+        {/* Expiry picker */}
+        <select
+          value={expiry}
+          onChange={e => setExpiry(e.target.value as ExpiryOption)}
+          title="Message expiry"
+          style={{
+            padding: '5px 8px', border: '1.5px solid var(--border)', borderRadius: '8px',
+            background: 'var(--bg-tertiary)', color: 'var(--text-secondary)',
+            fontSize: '12px', fontFamily: 'inherit', cursor: 'pointer', flexShrink: 0,
+            outline: 'none',
+          }}
+        >
+          {(Object.keys(EXPIRY_LABELS) as ExpiryOption[]).map(k => (
+            <option key={k} value={k}>{EXPIRY_LABELS[k]}</option>
+          ))}
+        </select>
+
+        {/* Invite link */}
+        <InviteButton roomId={roomId} />
+
+        {/* Room code badge — click to copy */}
         <RoomBadge roomId={roomId} />
 
         {/* Animated theme toggle */}
@@ -208,7 +308,7 @@ function ChatApp({ userName, roomId, password, onJoinError }: { userName: string
         <Sidebar users={onlineUsers} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <MessageList messages={messages} typingUsers={typingUsers} />
+          <MessageList messages={visibleMessages} typingUsers={typingUsers} />
           <MessageInput onSend={sendMessage} onTyping={emitTyping} onFile={sendFile} />
         </main>
       </div>

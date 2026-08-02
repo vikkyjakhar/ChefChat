@@ -28,10 +28,10 @@ const io = new Server(httpServer, {
   maxHttpBufferSize: 7e6, // 7MB — allows base64 of 5MB file
 });
 
-// In-memory: { [roomId]: { [socketId]: { id, name } } }
+// In-memory: { [roomId]: { [socketId]: { id, name, isCreator } } }
 const rooms = {};
-// Stores the password for each room (set by the creator, empty string = no password)
 const roomPasswords = {};
+const roomCreators = {}; // roomId -> socketId of creator
 
 const getUsers = (roomId) => Object.values(rooms[roomId] ?? {});
 const ts = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -65,10 +65,15 @@ io.on('connection', (socket) => {
     currentName = name;
     socket.join(room);
     if (!rooms[room]) rooms[room] = {};
-    rooms[room][socket.id] = { id: socket.id, name };
+    const isCreator = !roomCreators[room];
+    if (isCreator) roomCreators[room] = socket.id;
+    rooms[room][socket.id] = { id: socket.id, name, isCreator };
+
+    // Tell this socket their role
+    socket.emit('room:meta', { isCreator });
 
     socket.emit('users', getUsers(room));
-    socket.to(room).emit('user:joined', { id: socket.id, name });
+    socket.to(room).emit('user:joined', { id: socket.id, name, isCreator });
     socket.to(room).emit('users', getUsers(room));
     io.to(room).emit('system', { text: name + ' joined the chat', timestamp: ts() });
   });
@@ -105,6 +110,7 @@ io.on('connection', (socket) => {
     if (!Object.keys(rooms[currentRoom] ?? {}).length) {
       delete rooms[currentRoom];
       delete roomPasswords[currentRoom];
+      delete roomCreators[currentRoom];
     }
   });
 });

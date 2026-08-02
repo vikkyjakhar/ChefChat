@@ -162,29 +162,41 @@ export default function MessageList({ messages, typingUsers }: Props) {
         }
 
         if (msg.type === 'system') {
+          const joinMatch = msg.text.match(/^(.+?) joined the chat$/)
+          const leftMatch = msg.text.match(/^(.+?) left the chat$/)
+          const presenceName = joinMatch?.[1] ?? leftMatch?.[1] ?? null
+          const isJoin = !!joinMatch
+
           return (
-            <div
-              key={msg.id}
-              className="message-enter"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                margin: '8px 0',
-              }}
-            >
-              <span
-                style={{
-                  background: 'var(--accent-soft)',
-                  color: 'var(--accent)',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  padding: '4px 12px',
-                  borderRadius: '20px',
-                  border: '1px solid var(--border)',
-                }}
-              >
-                {msg.text} · {msg.timestamp}
-              </span>
+            <div key={msg.id} className="message-enter" style={{ display: 'flex', justifyContent: 'center', margin: '8px 0' }}>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: '7px',
+                background: 'var(--accent-soft)', border: '1px solid var(--border)',
+                borderRadius: '20px',
+                padding: presenceName ? '4px 12px 4px 5px' : '4px 12px',
+              }}>
+                {presenceName && (
+                  <div style={{ position: 'relative', flexShrink: 0 }}>
+                    <div style={{
+                      width: '22px', height: '22px', borderRadius: '50%',
+                      background: avatarColor(presenceName),
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'white', fontSize: '10px', fontWeight: 700,
+                    }}>
+                      {presenceName.charAt(0).toUpperCase()}
+                    </div>
+                    <span style={{
+                      position: 'absolute', bottom: '-1px', right: '-1px',
+                      width: '8px', height: '8px', borderRadius: '50%',
+                      background: isJoin ? '#22c55e' : '#94a3b8',
+                      border: '1.5px solid var(--accent-soft)',
+                    }} />
+                  </div>
+                )}
+                <span style={{ color: 'var(--accent)', fontSize: '12px', fontWeight: 500 }}>
+                  {msg.text} · {msg.timestamp}
+                </span>
+              </div>
             </div>
           )
         }
