@@ -13,7 +13,14 @@
 
 <br/><br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&duration=2800&pause=800&color=22C55E&center=true&vCenter=true&width=700&lines=🔐+End-to-End+Encrypted+Chat;🚀+Real-time+across+any+network;🔒+Password-protected+private+rooms;📁+Send+images+%26+files+up+to+5MB;👑+Room+creator+%26+admin+badges;📋+One-click+invite+links;⏱️+Message+expiry+controls;🌗+Animated+dark+%2F+light+theme" alt="ChefChat features" />
+![](https://img.shields.io/badge/🔐_End--to--End-Encrypted-16a34a?style=flat-square&labelColor=052e14)
+![](https://img.shields.io/badge/⚡_Real--time-Messaging-16a34a?style=flat-square&labelColor=052e14)
+![](https://img.shields.io/badge/🔒_Password-Protected_Rooms-16a34a?style=flat-square&labelColor=052e14)
+![](https://img.shields.io/badge/📁_File_Sharing-Up_to_5MB-16a34a?style=flat-square&labelColor=052e14)
+![](https://img.shields.io/badge/👑_Creator-Badges-16a34a?style=flat-square&labelColor=052e14)
+![](https://img.shields.io/badge/📋_One--click-Invite_Links-16a34a?style=flat-square&labelColor=052e14)
+![](https://img.shields.io/badge/⏱️_Message-Expiry_Controls-16a34a?style=flat-square&labelColor=052e14)
+![](https://img.shields.io/badge/🌗_Dark_%2F_Light-Theme_Toggle-16a34a?style=flat-square&labelColor=052e14)
 
 <br/><br/>
 
