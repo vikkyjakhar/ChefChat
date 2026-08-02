@@ -19,7 +19,14 @@
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Inter&weight=600&size=22&pause=1000&color=16A34A&center=true&vCenter=true&width=700&lines=🔐+End-to-End+Encrypted+by+default;🚀+Real-time+across+any+network;🔒+Password-protected+private+rooms;📁+Send+images+%26+files+up+to+5MB;👑+Room+creator+%26+admin+badges;⏱️+Message+expiry+controls;🌗+Animated+dark+%2F+light+theme;📋+One-click+invite+links" alt="Typing SVG" />
+![E2EE](https://img.shields.io/badge/🔐_End--to--End-Encrypted-16a34a?style=flat-square)
+![Realtime](https://img.shields.io/badge/⚡_Real--time-Messaging-16a34a?style=flat-square)
+![Passwords](https://img.shields.io/badge/🔒_Password-Protected_Rooms-16a34a?style=flat-square)
+![Files](https://img.shields.io/badge/📁_File_Sharing-Up_to_5MB-16a34a?style=flat-square)
+![Creator](https://img.shields.io/badge/👑_Creator-Badges-16a34a?style=flat-square)
+![Expiry](https://img.shields.io/badge/⏱️_Message-Expiry_Controls-16a34a?style=flat-square)
+![Theme](https://img.shields.io/badge/🌗_Dark_%2F_Light-Theme_Toggle-16a34a?style=flat-square)
+![Invite](https://img.shields.io/badge/📋_One--click-Invite_Links-16a34a?style=flat-square)
 
 <br/>
 
