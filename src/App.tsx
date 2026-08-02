@@ -134,15 +134,13 @@ function InviteButton({ roomId }: { roomId: string }) {
 }
 
 function ChatApp({ userName, roomId, password, onJoinError }: { userName: string; roomId: string; password: string; onJoinError: (err: string) => void }) {
-  const { messages, onlineUsers, typingUsers, connected, error, isCreator, e2eeReady, sendMessage, sendFile, emitTyping } = useChat(userName, roomId, password)
+  const { messages, onlineUsers, typingUsers, connected, error, joinRejected, isCreator, e2eeReady, sendMessage, sendFile, emitTyping } = useChat(userName, roomId, password)
   const isLocked = password.trim().length > 0
 
-  // Kick back to join screen if server rejects the password
+  // Kick back to join screen on any server-side join rejection (wrong password, etc.)
   useEffect(() => {
-    if (error && error.toLowerCase().includes('password')) {
-      onJoinError(error)
-    }
-  }, [error])
+    if (joinRejected) onJoinError(joinRejected)
+  }, [joinRejected])
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [expiry, setExpiry] = useState<ExpiryOption>('none')
   const [isDark, setIsDark] = useState(() => {

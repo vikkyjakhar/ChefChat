@@ -52,6 +52,7 @@ export function useChat(userName: string, roomId: string, password = '') {
   const [typingUsers, setTypingUsers] = useState<string[]>([])
   const [connected, setConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [joinRejected, setJoinRejected] = useState<string | null>(null)
   const [isCreator, setIsCreator] = useState(false)
   const [e2eeReady, setE2eeReady] = useState(false)
 
@@ -106,7 +107,8 @@ export function useChat(userName: string, roomId: string, password = '') {
       })
 
       socket.on('join:error', (data: { message: string }) => {
-        setError(data.message)
+        setJoinRejected(data.message)
+        socket.disconnect()
       })
 
       socket.on('room:meta', (data: { isCreator: boolean }) => {
@@ -278,5 +280,5 @@ export function useChat(userName: string, roomId: string, password = '') {
     }, 1400)
   }, [])
 
-  return { messages, onlineUsers, typingUsers, connected, error, isCreator, e2eeReady, sendMessage, sendFile, emitTyping }
+  return { messages, onlineUsers, typingUsers, connected, error, joinRejected, isCreator, e2eeReady, sendMessage, sendFile, emitTyping }
 }
