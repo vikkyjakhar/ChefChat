@@ -72,8 +72,11 @@ export function useChat(userName: string, roomId: string, password = '') {
       return
     }
 
+    let cancelled = false
+
     // Derive E2EE key before opening the socket so it's ready for the first message
     deriveRoomKey(roomId, password).then(key => {
+      if (cancelled) return  // cleanup already ran (React Strict Mode double-invoke)
       keyRef.current = key
       setE2eeReady(true)
 
@@ -189,6 +192,7 @@ export function useChat(userName: string, roomId: string, password = '') {
     })
 
     return () => {
+      cancelled = true
       socketRef.current?.disconnect()
       socketRef.current = null
     }
