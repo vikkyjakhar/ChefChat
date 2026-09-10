@@ -36,6 +36,9 @@ jobs:
       env:
         VITE_SOCKET_URL: https://chefchats.onrender.com
 
+    - name: Generate Android Platform
+      run: npx cap add android
+
     - name: Sync Capacitor
       run: npx cap sync android
 
