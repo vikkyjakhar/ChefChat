@@ -2,6 +2,7 @@ import { defineConfig, type HtmlTagDescriptor, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
+import { VitePWA } from 'vite-plugin-pwa'
 
 import siteConfiguration from './ui_files/make/site.json'
 
@@ -23,6 +24,24 @@ export default defineConfig(({ mode }) => {
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),
       figmaMakeKitPlugin({ storiesGlob: '/src/**/*.stories.{ts,tsx,js,jsx}' }),
+      VitePWA({
+        registerType: 'autoUpdate',
+        manifest: {
+          name: 'ChefChat',
+          short_name: 'ChefChat',
+          description: 'Secure · Real-time · Private Rooms',
+          theme_color: '#111827',
+          background_color: '#111827',
+          display: 'standalone',
+          icons: [
+            {
+              src: '/ui_files/make/favicon.png',
+              sizes: '192x192 512x512',
+              type: 'image/png'
+            }
+          ]
+        }
+      }),
     ],
     resolve: {
       alias: {
