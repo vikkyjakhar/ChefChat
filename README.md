@@ -5,7 +5,7 @@
 <br/>
 
 <a href="https://readme-typing-svg.demolab.com">
-  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=26&pause=1000&color=22c55e&center=true&vCenter=true&width=550&lines=End-to-End+Encrypted;Real-time+Messaging;Password-Protected+Rooms;No+Tracking,+No+Ads;ChefChat+v1.0+Released! 🎉" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=26&pause=1000&color=22c55e&center=true&vCenter=true&width=550&lines=End-to-End+Encrypted;Real-time+Messaging;Password-Protected+Rooms;No+Tracking,+No+Ads;ChefChat+v1.0+Released!" alt="Typing SVG" />
 </a>
 
 <br/><br/>
