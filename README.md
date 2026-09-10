@@ -279,6 +279,6 @@ node server.js
 
 <br/>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=140&section=footer&text=ui_files%20v1.0%20—%20Released&fontSize=32&fontColor=ffffff&animation=twinkling&fontAlignY=65" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=140&section=footer&text=ChefChat%20v1.0%20—%20Released&fontSize=32&fontColor=ffffff&animation=twinkling&fontAlignY=65" width="100%"/>
 
 </div>
