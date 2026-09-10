@@ -1,15 +1,20 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=240&section=header&text=ChefChat&fontSize=90&fontColor=fff&animation=twinkling&fontAlignY=38&desc=🔐%20End-to-End%20Encrypted%20·%20Real-time%20·%20Private%20Rooms&descAlignY=62&descSize=20&descColor=dcfce7" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=260&section=header&text=ChefChat&fontSize=90&fontColor=fff&animation=twinkling&fontAlignY=38&desc=Secure%20·%20Real-time%20·%20Private%20Rooms&descAlignY=62&descSize=20&descColor=dcfce7" width="100%"/>
 
 <br/>
+
+<a href="https://readme-typing-svg.demolab.com">
+  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=24&pause=1000&color=22c55e&center=true&vCenter=true&width=500&lines=End-to-End+Encrypted;Real-time+Messaging;Password-Protected+Rooms;No+Tracking,+No+Ads" alt="Typing SVG" />
+</a>
+
+<br/><br/>
 
 <a href="#"><img src="https://img.shields.io/badge/🚀%20Released-v1.0-brightgreen?style=for-the-badge&labelColor=052e14" /></a>
 <a href="#"><img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white&labelColor=0d1117" /></a>
 <a href="#"><img src="https://img.shields.io/badge/Socket.io-4.8-010101?style=for-the-badge&logo=socket.io&logoColor=white&labelColor=0d1117" /></a>
 <a href="#"><img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white&labelColor=0d1117" /></a>
 <a href="#"><img src="https://img.shields.io/badge/AES--256--GCM-E2EE-16a34a?style=for-the-badge&logo=letsencrypt&logoColor=white&labelColor=052e14" /></a>
-<a href="#"><img src="https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge&labelColor=052e14" /></a>
 
 <br/><br/>
 
@@ -17,12 +22,8 @@
 ![](https://img.shields.io/badge/⚡_Real--time-Messaging-16a34a?style=flat-square&labelColor=052e14)
 ![](https://img.shields.io/badge/🔒_Password-Protected_Rooms-16a34a?style=flat-square&labelColor=052e14)
 ![](https://img.shields.io/badge/📁_File_Sharing-Up_to_5MB-16a34a?style=flat-square&labelColor=052e14)
-![](https://img.shields.io/badge/👑_Creator-Badges-16a34a?style=flat-square&labelColor=052e14)
-![](https://img.shields.io/badge/📋_One--click-Invite_Links-16a34a?style=flat-square&labelColor=052e14)
-![](https://img.shields.io/badge/⏱️_Message-Expiry_Controls-16a34a?style=flat-square&labelColor=052e14)
-![](https://img.shields.io/badge/🌗_Dark_%2F_Light-Theme_Toggle-16a34a?style=flat-square&labelColor=052e14)
 
-<br/><br/>
+<br/>
 
 > ### 🎉 ChefChat v1.0 is officially released!
 > **Private, encrypted, real-time chat — no accounts, no ads, no tracking.**
@@ -211,12 +212,12 @@ Web Crypto API (built-in)        maxHttpBufferSize: 7MB
 ### 1. Frontend
 
 ```bash
-pnpm install
-pnpm dev
+npm install
+npm run dev
 # → http://localhost:5173
 ```
 
-Add your server URL as an environment variable:
+Add your server URL as an environment variable in a `.env` file:
 ```bash
 VITE_SOCKET_URL=https://your-server.onrender.com
 ```
@@ -229,7 +230,7 @@ node server.js
 # → ChefChat server on http://localhost:3001
 ```
 
-> Reference server code is in [`src/server/server-readme.ts`](src/server/server-readme.ts)
+> Reference server code is in `src/server/server-readme.ts`
 
 ---
 
@@ -237,8 +238,8 @@ node server.js
 
 | Service | Purpose | Notes |
 |---|---|---|
-| [Figma Make](https://figma.com/make) | Frontend | Auto-deploys on save |
-| [Render](https://render.com) | Backend | Free tier — Build: `npm install` · Start: `node server.js` |
+| [Vercel](https://vercel.com) | Frontend | Push to GitHub, auto-deploys instantly |
+| [Render](https://render.com) | Backend | Connect to GitHub — Build: `npm install` · Start: `node server.js` |
 | [ngrok](https://ngrok.com) | Local testing | `npx ngrok http 3001` |
 
 ---
