@@ -44,7 +44,7 @@ function uid(): string {
   return Math.random().toString(36).slice(2, 10)
 }
 
-const SERVER_URL = (import.meta.env.VITE_SOCKET_URL as string) || 'https://chefchats.onrender.com'
+const SERVER_URL = (import.meta.env.VITE_SOCKET_URL as string) || 'https://chefchat-tkks.onrender.com'
 
 export function useChat(userName: string, roomId: string, password = '') {
   const [messages, setMessages] = useState<Message[]>([])

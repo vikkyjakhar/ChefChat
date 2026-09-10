@@ -2,7 +2,10 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 
 const PORT = process.env.PORT || 3001;
-const httpServer = createServer();
+const httpServer = createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('ChefChat Backend is running!');
+});
 const io = new Server(httpServer, {
   cors: { origin: '*', methods: ['GET', 'POST'] },
   maxHttpBufferSize: 7e6, // 7MB — allows base64 of 5MB file
