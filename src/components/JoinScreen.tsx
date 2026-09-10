@@ -316,7 +316,7 @@ export default function JoinScreen({ onJoin, joinError }: Props) {
         boxShadow: 'var(--shadow-md)', textAlign: 'center',
       }}>
         <Logo />
-        <h1 className="join-title" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 3px' }}>ui_files</h1>
+        <h1 className="join-title" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 3px' }}>ChefChat</h1>
         <p className="join-subtitle" style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: '0 0 20px' }}>
           Private rooms — no two rooms share the same ID
         </p>

@@ -235,7 +235,7 @@ function ChatApp({ userName, roomId, password, onJoinError }: { userName: string
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <h1 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)' }}>
-                ui_files
+                ChefChat
               </h1>
               {isCreator && (
                 <span title="You created this room" style={{ fontSize: '14px', lineHeight: 1 }}>👑</span>
