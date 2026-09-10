@@ -1,11 +1,11 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=260&section=header&text=ChefChat&fontSize=90&fontColor=fff&animation=twinkling&fontAlignY=38&desc=Secure%20·%20Real-time%20·%20Private%20Rooms&descAlignY=62&descSize=20&descColor=dcfce7" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=22,163,74,5,46,20&height=260&section=header&text=ChefChat&fontSize=90&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=Secure%20·%20Real-time%20·%20Private%20Rooms&descAlignY=62&descSize=20&descColor=dcfce7" width="100%"/>
 
 <br/>
 
 <a href="https://readme-typing-svg.demolab.com">
-  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=24&pause=1000&color=22c55e&center=true&vCenter=true&width=500&lines=End-to-End+Encrypted;Real-time+Messaging;Password-Protected+Rooms;No+Tracking,+No+Ads" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=26&pause=1000&color=22c55e&center=true&vCenter=true&width=550&lines=End-to-End+Encrypted;Real-time+Messaging;Password-Protected+Rooms;No+Tracking,+No+Ads;ChefChat+v1.0+Released! 🎉" alt="Typing SVG" />
 </a>
 
 <br/><br/>
@@ -21,11 +21,11 @@
 ![](https://img.shields.io/badge/🔐_End--to--End-Encrypted-16a34a?style=flat-square&labelColor=052e14)
 ![](https://img.shields.io/badge/⚡_Real--time-Messaging-16a34a?style=flat-square&labelColor=052e14)
 ![](https://img.shields.io/badge/🔒_Password-Protected_Rooms-16a34a?style=flat-square&labelColor=052e14)
-![](https://img.shields.io/badge/📁_File_Sharing-Up_to_5MB-16a34a?style=flat-square&labelColor=052e14)
+![](https://img.shields.io/badge/📱_Android_APK_Ready-16a34a?style=flat-square&labelColor=052e14)
 
 <br/>
 
-> ### 🎉 ChefChat v1.0 is officially released!
+> ### 🎉 ChefChat v1.0 is officially released and live!
 > **Private, encrypted, real-time chat — no accounts, no ads, no tracking.**
 
 <br/>
@@ -44,7 +44,7 @@
 
 ---
 
-## 🚀 What's New in v1.0
+## 🚀 What's New in v1.0 Release
 
 <table>
 <tr>
@@ -56,50 +56,50 @@ AES-256-GCM with PBKDF2 key derivation. The server **never** sees your messages.
 </td>
 <td>
 
-**🔒 Password-Protected Rooms**
-Lock your room — only people with the password can join.
+**📱 Native Android App**
+Full Capacitor Android integration, custom app icons, and splash screens ready for your phone!
 
 </td>
 </tr>
 <tr>
+<td>
+
+**🔒 Password-Protected Rooms**
+Lock your room — only people with the password can join.
+
+</td>
 <td>
 
 **👑 Room Creator Badges**
 Crown icon marks who created the room, in both header and sidebar.
 
 </td>
+</tr>
+<tr>
 <td>
 
 **👥 Live Participant Count**
 `N/100` updates in real time as people join and leave.
 
 </td>
-</tr>
-<tr>
 <td>
 
 **📋 Invite Links**
 One click copies a URL with the room code pre-filled.
 
 </td>
+</tr>
+<tr>
 <td>
 
 **⏱️ Message Expiry**
 Show last 1 hour, 24 hours, or everything until room closes.
 
 </td>
-</tr>
-<tr>
 <td>
 
 **🟢 Presence Avatars**
 Join/leave toasts show a colored avatar + green/grey status dot.
-
-</td>
-<td>
-
-**🛡️ E2EE Badge**
-Live shield indicator in the header — turns green when encryption is active.
 
 </td>
 </tr>
@@ -192,6 +192,7 @@ Live shield indicator in the header — turns green when encryption is active.
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js_18+-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Socket.io](https://img.shields.io/badge/Socket.io_4.8-010101?style=for-the-badge&logo=socket.io&logoColor=white)
+![Capacitor](https://img.shields.io/badge/Capacitor-Android-119ADD?style=for-the-badge&logo=capacitor&logoColor=white)
 
 </div>
 
@@ -202,7 +203,7 @@ React 19 + TypeScript 5          Node.js 18+
 Vite 8                           Express
 Tailwind CSS v4                  Socket.io 4.8
 socket.io-client 4.8             In-memory rooms + passwords
-Web Crypto API (built-in)        maxHttpBufferSize: 7MB
+Capacitor 8 (Android Build)      Health Checks
 ```
 
 ---
@@ -217,11 +218,6 @@ npm run dev
 # → http://localhost:5173
 ```
 
-Add your server URL as an environment variable in a `.env` file:
-```bash
-VITE_SOCKET_URL=https://your-server.onrender.com
-```
-
 ### 2. Backend Server
 
 ```bash
@@ -230,17 +226,15 @@ node server.js
 # → ChefChat server on http://localhost:3001
 ```
 
-> Reference server code is in `src/server/server-readme.ts`
-
 ---
 
 ## 🌐 Deployment
 
 | Service | Purpose | Notes |
 |---|---|---|
-| [Vercel](https://vercel.com) | Frontend | Push to GitHub, auto-deploys instantly |
+| **Static Web Host** | Frontend | Build with `npm run build` |
 | [Render](https://render.com) | Backend | Connect to GitHub — Build: `npm install` · Start: `node server.js` |
-| [ngrok](https://ngrok.com) | Local testing | `npx ngrok http 3001` |
+| **Android Studio** | Android App | Run `npx cap sync android` and build natively |
 
 ---
 
@@ -280,6 +274,6 @@ node server.js
 
 <br/>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=140&section=footer&text=ChefChat%20v1.0%20—%20Released&fontSize=32&fontColor=ffffff&animation=twinkling&fontAlignY=65" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=22,163,74,5,46,20&height=140&section=footer&text=ChefChat%20v1.0%20—%20Officially%20Released!&fontSize=32&fontColor=ffffff&animation=twinkling&fontAlignY=65" width="100%"/>
 
 </div>
