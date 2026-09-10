@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=240&section=header&text=ui_files&fontSize=90&fontColor=fff&animation=twinkling&fontAlignY=38&desc=🔐%20End-to-End%20Encrypted%20·%20Real-time%20·%20Private%20Rooms&descAlignY=62&descSize=20&descColor=dcfce7" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=240&section=header&text=ChefChat&fontSize=90&fontColor=fff&animation=twinkling&fontAlignY=38&desc=🔐%20End-to-End%20Encrypted%20·%20Real-time%20·%20Private%20Rooms&descAlignY=62&descSize=20&descColor=dcfce7" width="100%"/>
 
 <br/>
 
@@ -24,7 +24,7 @@
 
 <br/><br/>
 
-> ### 🎉 ui_files v1.0 is officially released!
+> ### 🎉 ChefChat v1.0 is officially released!
 > **Private, encrypted, real-time chat — no accounts, no ads, no tracking.**
 
 <br/>
@@ -37,7 +37,7 @@
 
 ## 🗺️ Table of Contents
 
-[Features](#-features) · [E2EE](#-end-to-end-encryption) · [Why ui_files](#-why-chefchat) · [Tech Stack](#-tech-stack) · [Setup](#-setup) · [Deployment](#-deployment) · [Security](#-security)
+[Features](#-features) · [E2EE](#-end-to-end-encryption) · [Why ChefChat](#-why-chefchat) · [Tech Stack](#-tech-stack) · [Setup](#-setup) · [Deployment](#-deployment) · [Security](#-security)
 
 </div>
 
@@ -170,7 +170,7 @@ Live shield indicator in the header — turns green when encryption is active.
 
 ---
 
-## 🚀 Why ui_files?
+## 🚀 Why ChefChat?
 
 ```
   ✅  No account required        ✅  Encrypted by default
@@ -226,7 +226,7 @@ VITE_SOCKET_URL=https://your-server.onrender.com
 ```bash
 npm install express socket.io cors
 node server.js
-# → ui_files server on http://localhost:3001
+# → ChefChat server on http://localhost:3001
 ```
 
 > Reference server code is in [`src/server/server-readme.ts`](src/server/server-readme.ts)
@@ -275,7 +275,7 @@ node server.js
 
 <br/>
 
-**⭐ If you found ui_files useful, give it a star!**
+**⭐ If you found ChefChat useful, give it a star!**
 
 <br/>
 
