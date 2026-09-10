@@ -10,6 +10,12 @@
 
 <br/><br/>
 
+<a href="https://chefchat-gamma.vercel.app" target="_blank">
+  <img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=22,163,74,5,46,20&height=55&text=🌐%20Visit%20Live%20Website&fontSize=22&fontColor=ffffff&animation=twinkling&fontAlignY=55" alt="Visit Website" />
+</a>
+
+<br/><br/>
+
 <a href="#"><img src="https://img.shields.io/badge/🚀%20Released-v1.0-brightgreen?style=for-the-badge&labelColor=052e14" /></a>
 <a href="#"><img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white&labelColor=0d1117" /></a>
 <a href="#"><img src="https://img.shields.io/badge/Socket.io-4.8-010101?style=for-the-badge&logo=socket.io&logoColor=white&labelColor=0d1117" /></a>
